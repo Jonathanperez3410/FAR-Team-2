@@ -115,7 +115,7 @@ void sendBNOCalStatus()
                        (String)accelCal + "," +
                        (String)magCal;
 
-    sendData("bno_calStatus", calStatus);
+    sendData("bno_cal_status", calStatus);
 }
 
 void sendData(String prefix, String data)
