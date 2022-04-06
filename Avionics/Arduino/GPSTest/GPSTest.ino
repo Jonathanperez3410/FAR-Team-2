@@ -1,9 +1,13 @@
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 
-// RX to pin 7, TX to pin 8
-SoftwareSerial mySerial(8, 7);
-Adafruit_GPS GPS(&mySerial);
+// Hardware Serial: RX to pin 1, TX to pin 0
+//#define GPSSerial Serial1
+//Adafruit_GPS GPS(&GPSSerial);
+
+// Software Serial: R
+
+Adafruit_GPS GPS(&GPSSerial);
 
 #define GPSECHO false
 
@@ -18,17 +22,13 @@ void setup()
     GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
     GPS.sendCommand(PGCMD_ANTENNA);
     delay(1000);
-
-//    mySerial.println(PMTK_Q_RELEASE);
 }
 
 uint32_t timer = millis();
 
 void loop()
 {
-    char c = GPS.read();
-    if ((c) && (GPSECHO))
-        Serial.write(c);
+    GPS.read();
 
     if (GPS.newNMEAreceived())
     {
