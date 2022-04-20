@@ -29,14 +29,14 @@ void setup()
     // Connect to the serial port and initialize the sensors
     Serial.begin(115200);
     bnoInit();
-    bmpInit();
+//    bmpInit();
     gpsInit();
 }
 
 void loop() 
 {
     bnoData();
-    bmpData();
+//    bmpData();
     gpsData();
 }
 
@@ -105,15 +105,15 @@ void bnoData()
         imu::Vector<3> linAccel = BNO.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
         imu::Vector<3> grav = BNO.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
     
-        if (gyroCal == 3 && accelCal == 3 && magCal == 3)
+        if (gyroCal == 3 && magCal == 3)
         {
             sendBNOVector(euler, "bno_euler");
-            sendBNOVector(accel, "bno_accel");
-            sendBNOVector(mag, "bno_mag");
-            sendBNOVector(gyro, "bno_gyro");
-            sendBNOVector(linAccel, "bno_linAccel");
-            sendBNOVector(grav, "bno_grav");
-            sendData("bno_temp", (String)BNO.getTemp());
+//            sendBNOVector(accel, "bno_accel");
+//            sendBNOVector(mag, "bno_mag");
+//            sendBNOVector(gyro, "bno_gyro");
+//            sendBNOVector(linAccel, "bno_linAccel");
+//            sendBNOVector(grav, "bno_grav");
+//            sendData("bno_temp", (String)BNO.getTemp());
         }
     }
 }
