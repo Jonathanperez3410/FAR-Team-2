@@ -40,9 +40,9 @@ public class RocketBehavior extends Behavior
         catch (Exception ignored) {}
 
         Transform3D rotation = new Transform3D();
-        Transform3D rotX = new Transform3D(); rotX.rotX(angleX * Math.PI / 180);
-        Transform3D rotY = new Transform3D(); rotY.rotY(angleY * Math.PI / 180);
-        Transform3D rotZ = new Transform3D(); rotZ.rotZ(angleZ * Math.PI / 180);
+        Transform3D rotX = new Transform3D(); rotX.rotX(angleZ * Math.PI / 180);
+        Transform3D rotY = new Transform3D(); rotY.rotY(angleX * Math.PI / 180);
+        Transform3D rotZ = new Transform3D(); rotZ.rotZ(angleY * Math.PI / 180);
 
         rotation.mul(rotX); rotation.mul(rotY); rotation.mul(rotZ);
         tg.setTransform(rotation);
