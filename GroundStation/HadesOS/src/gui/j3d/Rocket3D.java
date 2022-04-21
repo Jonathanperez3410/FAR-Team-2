@@ -1,11 +1,14 @@
 package gui.j3d;
 
-import java.awt.*;
+import com.sun.j3d.utils.geometry.ColorCube;
+import com.sun.j3d.utils.universe.SimpleUniverse;
 
-import com.sun.j3d.utils.universe.*;
-import com.sun.j3d.utils.geometry.*;
-import javax.media.j3d.*;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.TransformGroup;
 import javax.swing.*;
+import java.awt.*;
 
 public class Rocket3D extends JPanel
 {

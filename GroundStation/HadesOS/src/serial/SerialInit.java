@@ -1,6 +1,5 @@
 package serial;
 
-import gui.DataPanel;
 import jssc.SerialPort;
 import jssc.SerialPortList;
 

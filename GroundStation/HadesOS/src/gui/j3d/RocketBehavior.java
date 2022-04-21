@@ -1,6 +1,6 @@
 package gui.j3d;
 
-import gui.Main;
+import gui.HadesOS;
 
 import javax.media.j3d.*;
 import java.util.Enumeration;
@@ -30,13 +30,13 @@ public class RocketBehavior extends Behavior
     @Override
     public void processStimulus(Enumeration enumeration)
     {
-        try { angleX = Double.parseDouble(Main.dataPanel.getAngleX()); }
+        try { angleX = Double.parseDouble(HadesOS.dataPanel.getAngleX()); }
         catch (Exception ignored) {}
 
-        try { angleY = Double.parseDouble(Main.dataPanel.getAngleY()); }
+        try { angleY = Double.parseDouble(HadesOS.dataPanel.getAngleY()); }
         catch (Exception ignored) {}
 
-        try { angleZ = Double.parseDouble(Main.dataPanel.getAngleZ()); }
+        try { angleZ = Double.parseDouble(HadesOS.dataPanel.getAngleZ()); }
         catch (Exception ignored) {}
 
         Transform3D rotation = new Transform3D();

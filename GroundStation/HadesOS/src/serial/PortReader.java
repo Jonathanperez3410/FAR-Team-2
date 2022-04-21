@@ -1,6 +1,7 @@
 package serial;
 
-import gui.Main;
+import gui.DataPanel;
+import gui.HadesOS;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -34,7 +35,7 @@ public class PortReader implements SerialPortEventListener
 
                 // Split the data string by commas and send it to the parse serial method
                 String[] inputArr = input.toString().split(",");
-                Main.parseData(inputArr);
+                DataPanel.parseData(inputArr);
             }
             catch (SerialPortException ex)
             {
