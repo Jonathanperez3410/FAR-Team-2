@@ -10,7 +10,7 @@ Adafruit_BMP280 BMP;
 
 // Create variables for the software serial connection and the GPS
 // RX to pin 7 and TX to pin 8
-#define GPSSerial Serial1
+#define GPSSerial Serial3
 Adafruit_GPS GPS(&GPSSerial);
 
 // Create variables for the calibration status of the BNO
