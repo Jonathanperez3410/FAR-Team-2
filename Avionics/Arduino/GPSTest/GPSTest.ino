@@ -1,12 +1,7 @@
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 
-// Hardware Serial: RX to pin 1, TX to pin 0
-//#define GPSSerial Serial1
-//Adafruit_GPS GPS(&GPSSerial);
-
-// Software Serial: R
-
+#define GPSSerial Serial3
 Adafruit_GPS GPS(&GPSSerial);
 
 #define GPSECHO false
