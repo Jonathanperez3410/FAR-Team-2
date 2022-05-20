@@ -12,7 +12,6 @@ void setup()
     digitalWrite(TXEN, LOW);
     
     Serial.begin(115200);
-    while (!Serial);
 
     Serial.println("LoRa Receiver");
 
@@ -21,26 +20,25 @@ void setup()
         Serial.println("Starting LoRa failed!");
         while (1);
     }
-
-    pinMode(7, OUTPUT);
 }
 
 void loop()
 {
     int packetSize = LoRa.parsePacket();
+
+    char data[20];
     
     if (packetSize)
     {
-        Serial.print("Received packet '");
-        digitalWrite(7, HIGH);
-
+        int increment = 0;
+        
         while (LoRa.available())
-            Serial.print((char)LoRa.read());
+        {
+            data[increment] = (char)LoRa.read();
+            increment++;
+        }
 
-        Serial.print("' with RSSI ");
-        Serial.println(LoRa.packetRssi());
-
-        delay(100);
-        digitalWrite(7, LOW);
+        data[increment] = '\0';
+        Serial.println(data);
     }
 }

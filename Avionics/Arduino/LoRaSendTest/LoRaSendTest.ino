@@ -9,10 +9,9 @@ void setup()
     pinMode(RXEN, OUTPUT);
     pinMode(TXEN, OUTPUT);
     digitalWrite(RXEN, LOW);
-    digitalWrite(TXEN, HIGH);
+    digitalWrite(TXEN, LOW);
     
     Serial.begin(115200);
-    while (!Serial);
 
     Serial.println("LoRa Sender");
 
@@ -25,8 +24,13 @@ void setup()
 
 void loop()
 {   
+    digitalWrite(TXEN, HIGH);
+
     LoRa.beginPacket();
-    LoRa.print("HellHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloo!");
+//    for (int i = 0; i < 3; i++)
+        LoRa.print("Hello");
     LoRa.endPacket();
+    
+    digitalWrite(TXEN, LOW);
     delay(500);
 }
