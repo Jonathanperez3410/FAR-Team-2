@@ -15,6 +15,11 @@ void setup()
 
     Serial.println("LoRa Sender");
 
+    LoRa.setSignalBandwidth(125E3);
+    LoRa.setCodingRate4(1);
+    LoRa.setSpreadingFactor(7);
+    LoRa.setPreambleLength(4);
+
     if (!LoRa.begin(915E6))
     {
         Serial.println("Starting LoRa failed!");

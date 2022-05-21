@@ -20,6 +20,11 @@ void setup()
         Serial.println("Starting LoRa failed!");
         while (1);
     }
+
+    LoRa.setSignalBandwidth(125E3);
+    LoRa.setCodingRate4(1);
+    LoRa.setSpreadingFactor(7);
+    LoRa.setPreambleLength(4);
 }
 
 void loop()
