@@ -1,27 +1,25 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial lora(3,2);
+SoftwareSerial Lora(3, 2);
+
+String incomingString;
 
 void setup()
 {
-    Serial.begin(115200);
-    lora.begin(9600);
-
-    lora.println("AT+RESET\r");
-    lora.println("AT+IPR=9600\r");
-    lora.println("AT+PARAMETER=7,9,4,12\r");
+    Lora.begin(115200);
+    pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
 {
-    String inString;
-    while (lora.available())
+    if (Serial.available())
     {
-//        if (lora.available())
-//            inString += String(char(lora.read()));
-        Serial.write(lora.read());
+        incomingString = Serial.readString();
+        if(incomingString.indexOf("Testing!") == 0)
+        {
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(100);
+            digitalWrite(LED_BUILTIN, LOW);
+        }
     }
-
-    if (inString.length() > 0)
-        Serial.print(inString);
 }

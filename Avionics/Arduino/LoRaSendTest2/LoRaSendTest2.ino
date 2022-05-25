@@ -1,25 +1,24 @@
 #include <SoftwareSerial.h>
 
-#define lora Serial2
+#define Lora Serial3
+
+unsigned long lastTransmission;
+const int interval = 1000;
 
 void setup()
 {
-    Serial.begin(115200);
-    lora.begin(115200);
-
-    lora.println("AT+RESET\r");
-    lora.println("AT+IPR=115200\r");
-    lora.println("AT+PARAMETER=7,9,4,12\r");
+    Lora.begin(115200);
+    pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
 {
-    String cmd = "AT+SEND=0,40,L L L L L L L L L L L L L L L L L L L L \r";
-    lora.println(cmd);
-
-    while(lora.available())
-        Serial.write(lora.read());
-    Serial.println();
-    Serial.println(cmd);
-    delay(1500);
+    if (millis() > lastTransmission + interval)
+    {
+        Lora.println("AT+SEND=0,8,Testing!\r");
+        digitalWrite(LED_BUILTIN ,HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN, LOW);
+        lastTransmission = millis();
+    }
 }
