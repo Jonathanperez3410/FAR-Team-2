@@ -1,21 +1,24 @@
-//#include <SoftwareSerial.h>
 #include <Adafruit_GPS.h>
 #include <Adafruit_BNO055.h>
 #include <Adafruit_BMP280.h>
+#include <SD.h>
+#include <SPI.h>
 
 // Create a variable for the LoRa module
 // RX to pin 10, TX to pin 9 (Teensy 3.5 Serial2)
 #define Lora Serial2
+
+// Create variables for the software serial connection and the GPS
+// RX to pin 8, TX to pin 7 (Teensy 3.5 Serial3)
+#define GPSSerial Serial3
+Adafruit_GPS GPS(&GPSSerial);
 
 // Create variables for the BNO and BMP
 // The BNO's I2C address is pulled up to 0x29 to avoid conflict with the BMP
 Adafruit_BNO055 BNO = Adafruit_BNO055(19, 0x29);
 Adafruit_BMP280 BMP;
 
-// Create variables for the software serial connection and the GPS
-// RX to pin 8, TX to pin 7 (Teensy 3.5 Serial3)
-#define GPSSerial Serial3
-Adafruit_GPS GPS(&GPSSerial);
+int isBnoActive, isBmpActive, isGpsActive;
 
 // Create variables for the calibration status of the BNO
 uint8_t sysCal, gyroCal, accelCal, magCal;
@@ -24,9 +27,9 @@ uint8_t sysCal, gyroCal, accelCal, magCal;
 #define PRESSURE_INIT 1015.10
 
 // Create interrupt timers for each sensor
-uint32_t bnoTimer = millis();
-uint32_t bmpTimer = millis();
-uint32_t gpsTimer = millis();
+//uint32_t bnoTimer = millis();
+//uint32_t bmpTimer = millis();
+//uint32_t gpsTimer = millis();
 
 void setup()
 {
@@ -34,8 +37,8 @@ void setup()
     Serial.begin(115200);
     
     Lora.begin(115200);
-    Lora.println("AT+RESET\r");
-    Lora.println("AT+IPR=115200\r");
+//    Lora.println("AT+RESET\r");
+//    Lora.println("AT+IPR=115200\r");
     Lora.println("AT+PARAMETER=7,9,4,12\r");
     
     bnoInit();
@@ -48,15 +51,6 @@ void loop()
 //    bnoData();
 //    bmpData();
 //    gpsData();
-
-//    sendData("greeting", "Hello!");
-
-    String data = "";
-    data += bnoData();
-
-    sendData2(data);
-    Serial.println(data);
-    delay(2000);
 }
 
 void bnoInit()
@@ -75,11 +69,7 @@ void bnoInit()
 void bmpInit()
 {
     // If the BMP cannot be initialized, throw an error
-    if (!BMP.begin())
-    {
-//        sendData("command", "bmp_init_bad");
-        while (1) delay (10);
-    }
+    if (!BMP.begin());
 
     // Set the sampling for the BMP, as per the device instructions
     BMP.setSampling(Adafruit_BMP280::MODE_NORMAL,
@@ -102,7 +92,13 @@ void gpsInit()
     sendData("command", "gps_init_good");
 }
 
-String bnoData()
+void sdInit()
+{
+    if (!SD.begin(BUILTIN_SDCARD))
+        
+}
+
+String getBnoData()
 {
 //    if (millis() - bnoTimer > 100)
 //    {
@@ -197,16 +193,12 @@ void sendBNOVector(imu::Vector<3> vector, String prefix)
     sendData(prefix, vectorStr);
 }
 
-void sendData(String command, String data)
+void logData()
 {
-    String packet = "*" + command + "," + data + "#";
-//    String cmd = "AT+SEND=0," + (String)packet.length() + "," + packet + "\r";
-
-    for (int i = 0; i < packet.length(); i++)
-        Lora.println("AT+SEND=0,1," + (String)packet.charAt(i) + "\r");
+    
 }
 
-void sendData2(String data)
+void sendDataToLora(String data)
 {
     String cmd = "AT+SEND=0," + (String)data.length() + "," + data + "\r";
     Lora.println(cmd);
