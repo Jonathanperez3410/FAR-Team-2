@@ -22,8 +22,62 @@ uint8_t sysCal, gyroCal, accelCal, magCal;
 
 uint32_t timer = millis();
 
-void deviceInit()
+File dataOut;
+
+void getTime()
 {
+	// GPS.read();
+	// if (GPS.newNMEAreceived())
+	// 	if (!GPS.parse(GPS.lastNMEA()))
+	// 		return;
+
+	Serial.print(GPS.year, DEC); Serial.print("-");
+	Serial.print(GPS.month, DEC); Serial.print("-");
+	Serial.print(GPS.day, DEC); Serial.print("-");
+	Serial.println("");
+}
+
+void writeBMPData()
+{
+	dataOut.print((String)BMP.readTemperature() + ",");
+	dataOut.print((String)BMP.readPressure() + ",");
+}
+
+void writeBNOData()
+{
+	sysCal = gyroCal = accelCal = magCal = 0;
+	BNO.getCalibration(&sysCal, &gyroCal, &accelCal, &magCal);
+
+	imu::Vector<3> euler = BNO.getVector(Adafruit_BNO055::VECTOR_EULER);
+	imu::Vector<3> gyro = BNO.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+	imu::Vector<3> accel = BNO.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+
+	if (sysCal == 3)
+	{
+		dataOut.print((String)euler.x() + ",");
+		dataOut.print((String)euler.y() + ",");
+		dataOut.print((String)euler.z() + ",");
+
+		dataOut.print((String)gyro.x() + ",");
+		dataOut.print((String)gyro.y() + ",");
+		dataOut.print((String)gyro.z() + ",");
+
+		dataOut.print((String)accel.x() + ",");
+		dataOut.print((String)accel.y() + ",");
+		dataOut.print((String)accel.z() + ",");
+	}
+	else
+	{
+		for (int i = 0; i < 9; i++)
+			dataOut.print("NO_BNO_CAL,");
+	}
+
+}
+
+void setup()
+{
+	Serial.begin(115200);
+	
 	// Initialize the BMP280
 	if (!BMP.begin())
 		isBMPActive = 0;
@@ -59,46 +113,20 @@ void deviceInit()
 	if (!SD.begin(BUILTIN_SDCARD))
 		isSDActive = 0;
 	else
+	{
 		isSDActive = 1;
-}
-
-void setup()
-{
-	Serial.begin(115200);
-	deviceInit();
+		dataOut = SD.open("data.csv", FILE_WRITE);
+	}
 }
 
 void loop()
 {
-	char c = GPS.read();
+	dataOut = SD.open("data.fuck", FILE_WRITE);
 
-	if (GPS.newNMEAreceived())
-	{
-		Serial.print(GPS.lastNMEA());
-		if (!GPS.parse(GPS.lastNMEA()))
-			return;
-	}
+	writeBNOData();
+	writeBMPData();
 
-	if (millis() - timer > 2000)
-	{
-		timer = millis();
-		Serial.print("\nTime: ");
-
-		if (GPS.hour < 10)
-				Serial.print('0');
-		Serial.print(GPS.hour, DEC); Serial.print(':');
-
-		if (GPS.minute < 10)
-			Serial.print('0');
-		Serial.print(GPS.minute, DEC); Serial.print(':');
-
-		if (GPS.seconds < 10)
-			Serial.print('0');
-		Serial.print(GPS.seconds, DEC); Serial.print('.');
-
-		Serial.print("\nDate: ");
-		Serial.print(GPS.day, DEC); Serial.print('/');
-		Serial.print(GPS.month, DEC); Serial.print("/20");
-		Serial.println(GPS.year, DEC);
-	}
+	dataOut.println();
+	dataOut.close();
+	delay(500);
 }
