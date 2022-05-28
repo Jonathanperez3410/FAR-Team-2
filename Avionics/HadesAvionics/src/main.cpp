@@ -5,27 +5,30 @@
 #include <SD.h>
 #include <SPI.h>
 
+// The buzzer is connected to pin 2
 const int BUZZER = 2;
 
+// The GPS is connected to the Teensy's Serial3 (Pins 7 & 8)
+Adafruit_GPS GPS(&Serial3);
 // #define GPSSerial Serial3
 // Adafruit_GPS GPS(&GPSSerial);
-Adafruit_GPS GPS(&Serial3);
 
+// The BMP and BNO are connected to the Teensy's SPI0 (Pins 18 & 19)
+// The BNO's ADR pin is pulled high, changing the address, to avoid conflicts with the BMP
 Adafruit_BMP280 BMP;
-
 Adafruit_BNO055 BNO = Adafruit_BNO055(19, 0x29);
 
-const float PRESSURE_INIT = 1015.10;
+// A buffer for the file that the data is being saved on
+File dataOut;
 
-int isBMPActive, isBNOActive, isGPSActive, isLoraActive, isSDActive;
+// Stores the activation status of each of the sensors
+int isSDActive, isGPSActive, isBMPActive, isBNOActive;
 
+// Stores the calibration status of the BNO
 uint8_t sysCal, gyroCal, accelCal, magCal;
 
-// uint32_t timer = millis();
-
+// In debug mode, the avionics will push certain data through the USB port
 const int DEBUG_MODE = 1;
-
-File dataOut;
 
 void sdInit();
 void gpsInit();
@@ -168,6 +171,12 @@ void bnoInit()
     }
 
     BNO.setExtCrystalUse(true);
+
+    while (sysCal != 3)
+    {
+        sysCal = gyroCal = accelCal = magCal = 0;
+        BNO.getCalibration(&sysCal, &gyroCal, &accelCal, &magCal);
+    }
 
     delay(1000);
 }
