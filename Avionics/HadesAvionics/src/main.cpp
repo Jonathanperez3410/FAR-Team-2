@@ -6,7 +6,9 @@
 #include <SPI.h>
 
 // The buzzer is connected to pin 2
-const int BUZZER = 2;
+const int BUZZER = 38;
+
+#define TEST Serial2
 
 // The GPS is connected to the Teensy's Serial3 (Pins 7 & 8)
 Adafruit_GPS GPS(&Serial3);
@@ -30,6 +32,8 @@ uint8_t sysCal, gyroCal, accelCal, magCal;
 // In debug mode, the avionics will push certain data through the USB port
 const int DEBUG_MODE = 1;
 
+uint32_t timer = millis();
+
 void sdInit();
 void gpsInit();
 void bmpInit();
@@ -48,32 +52,40 @@ void setup()
     if (DEBUG_MODE)
         Serial.begin(115200);
 
+    TEST.begin(115200);
+
     pinMode(BUZZER, OUTPUT);
 
-    // sdInit();
+    sdInit();
     gpsInit();
-    // bmpInit();
-    // bnoInit();
+    bmpInit();
+    bnoInit();
 }
 
 void loop()
 {
     // char c = GPS.read();
-    GPS.read();
+//    GPS.read();
+//
+//    if (GPS.newNMEAreceived())
+//    {
+//        if (!GPS.parse(GPS.lastNMEA()))
+//            return;
+//    }
+//
+//    if (millis() - timer > 1000)
+//    {
+//        timer = millis();
+//
+////        if (GPS.fix)
+////        {
+//            TEST.print(GPS.latitude, 4); TEST.print(",");
+//            TEST.println(GPS.longitude, 4);
+////        }
+//    }
 
-    if (GPS.newNMEAreceived())
-    {
-        Serial.print(GPS.lastNMEA());
-        if (!GPS.parse(GPS.lastNMEA()))
-            return;
-    }
-
-    if (GPS.fix)
-    {
-        Serial.println("FIX");
-        delay(100);
-    }
-
+    writeBMPData();
+    delay(500);
 }
 
 void sdInit()
@@ -172,19 +184,23 @@ void bnoInit()
 
     BNO.setExtCrystalUse(true);
 
-    while (sysCal != 3)
-    {
-        sysCal = gyroCal = accelCal = magCal = 0;
-        BNO.getCalibration(&sysCal, &gyroCal, &accelCal, &magCal);
-    }
+//    while (sysCal != 3)
+//    {
+//        sysCal = gyroCal = accelCal = magCal = 0;
+//        BNO.getCalibration(&sysCal, &gyroCal, &accelCal, &magCal);
+//    }
 
     delay(1000);
 }
 
 void writeBMPData()
 {
-    dataOut.print((String)BMP.readTemperature() + ",");
-    dataOut.print((String)BMP.readPressure() + ",");
+//    dataOut.print((String)BMP.readTemperature() + ",");
+//    dataOut.print((String)BMP.readPressure() + ",");
+    double psi = BMP.readPressure() * 0.000145038;
+
+    TEST.print((String)BMP.readTemperature() + ",");
+    TEST.println((String)psi + ",");
 }
 
 void writeBNOData()
